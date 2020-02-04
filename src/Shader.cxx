@@ -5,6 +5,7 @@ Shader::Shader()
 }
 
 Shader::Shader(const char* vertexSource, const char* fragSource)
+	: shaderProgram(glCreateProgram())
 {
 	int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexSource, nullptr);
@@ -14,7 +15,6 @@ Shader::Shader(const char* vertexSource, const char* fragSource)
 	glShaderSource(fragShader, 1, &fragSource, nullptr);
 	glCompileShader(fragShader);
 
-	shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragShader);
 	glLinkProgram(shaderProgram);
@@ -26,6 +26,13 @@ Shader::Shader(const char* vertexSource, const char* fragSource)
 Shader::~Shader()
 {
 	glDeleteProgram(shaderProgram);
+}
+
+Shader& Shader::operator=(Shader&& right) noexcept
+{
+	shaderProgram = right.shaderProgram;
+	right.shaderProgram = 0;
+	return *this;
 }
 
 int Shader::getID() const

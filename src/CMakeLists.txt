@@ -4,8 +4,10 @@ set(SOURCES
     "main.cxx"
     "Shader.h"
     "Shader.cxx"
-    "Rect.h"
-    "Rect.cxx"
+    "GLRect.h"
+    "GLRect.cxx"
+    "Debug.h"
+    "Debug.cpp"
 )
 
 add_executable(${BINARY} ${SOURCES})

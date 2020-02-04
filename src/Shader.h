@@ -12,6 +12,8 @@ public:
 
 	int getID() const;
 
+	Shader& operator=(Shader&& right) noexcept;
+
 	operator int() const;
 private:
 	int shaderProgram = 0;
