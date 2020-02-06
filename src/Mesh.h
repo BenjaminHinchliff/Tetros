@@ -11,12 +11,12 @@ class Mesh
 {
 public:
 	Mesh();
-	Mesh(const std::vector<float>& verticie, const std::vector<GLuint>& indices = {});
+	Mesh(const std::vector<float>& verticie, const std::vector<GLuint>& indices = {}, size_t stride = 2 * sizeof(float));
 	~Mesh();
 
 	Mesh& operator= (Mesh&& other) noexcept;
 
-	void draw() const noexcept;
+	virtual void draw() const;
 
 	const std::vector<float>& getVertices() const noexcept;
 	const std::vector<GLuint>& getIndices() const noexcept;

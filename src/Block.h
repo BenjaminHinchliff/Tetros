@@ -1,13 +1,13 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include "Mesh.h"
-#include "Shader.h"
+#include "TexturedMesh.h"
 
-class Block
+class Block : public TexturedMesh
 {
 public:
 	Block();
+
 
 private:
 

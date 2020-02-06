@@ -1,10 +1,12 @@
 #include "Mesh.h"
 
+#include <iostream>
+
 Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(const std::vector<float>& vertices, const std::vector<GLuint>& indices)
+Mesh::Mesh(const std::vector<float>& vertices, const std::vector<GLuint>& indices, size_t stride)
 	: vertices(vertices), indices(indices)
 {
 	glGenVertexArrays(1, &VAO);
@@ -21,12 +23,8 @@ Mesh::Mesh(const std::vector<float>& vertices, const std::vector<GLuint>& indice
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 	}
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, 0);
 	glEnableVertexAttribArray(0);
-
-	// a fucking hack
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
-	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -52,8 +50,9 @@ Mesh& Mesh::operator= (Mesh&& other) noexcept
 	return *this;
 }
 
-void Mesh::draw() const noexcept
+void Mesh::draw() const
 {
+	// std::cout << "base" << '\n';
 	glBindVertexArray(VAO);
 	if (EBO)
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

@@ -3,7 +3,7 @@
 
 #include "Mesh.h"
 
-class TexturedMesh : protected Mesh
+class TexturedMesh : public Mesh
 {
 public:
 	TexturedMesh();
@@ -12,6 +12,12 @@ public:
 		const std::vector<GLuint>& indicies,
 		const char* texturePath
 	);
+
+	TexturedMesh& operator=(TexturedMesh&& other) noexcept;
+
+	virtual void draw() const;
+protected:
+	GLuint texture = 0;
 };
 
 #endif // !TEXTURED_MESH_H
