@@ -1,6 +1,8 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+#include <fstream>
+
 #include <glad/glad.h>
 
 class Shader
@@ -8,6 +10,7 @@ class Shader
 public:
 	Shader();
 	Shader(const char* vertexSource, const char* fragSource);
+	Shader(std::ifstream vertexFile, std::ifstream fragfile);
 	~Shader();
 
 	int getID() const;
@@ -16,6 +19,8 @@ public:
 
 	operator int() const;
 private:
+	int buildProgram(const char* vertexSource, const char* fragmentSource) const;
+
 	int shaderProgram = 0;
 };
 

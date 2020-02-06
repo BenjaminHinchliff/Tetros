@@ -4,23 +4,20 @@ Shader::Shader()
 {
 }
 
-Shader::Shader(const char* vertexSource, const char* fragSource)
-	: shaderProgram(glCreateProgram())
+Shader::Shader(const char* vertexSource, const char* fragmentSource)
+	: shaderProgram(buildProgram(vertexSource, fragmentSource))
 {
-	int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexSource, nullptr);
-	glCompileShader(vertexShader);
+}
 
-	int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragShader, 1, &fragSource, nullptr);
-	glCompileShader(fragShader);
+Shader::Shader(std::ifstream vertexFile, std::ifstream fragmentFile)
+{
+	std::string vertexString((std::istreambuf_iterator<char>(vertexFile)), std::istreambuf_iterator<char>());
+	const char* vertexSource = vertexString.c_str();
 
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragShader);
-	glLinkProgram(shaderProgram);
+	std::string fragmentString((std::istreambuf_iterator<char>(fragmentFile)), std::istreambuf_iterator<char>());
+	const char* fragmentSource = fragmentString.c_str();
 
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragShader);
+	shaderProgram = buildProgram(vertexSource, fragmentSource);
 }
 
 Shader::~Shader()
@@ -42,5 +39,26 @@ int Shader::getID() const
 
 Shader::operator int() const
 {
+	return shaderProgram;
+}
+
+int Shader::buildProgram(const char* vertexSource, const char* fragmentSource) const
+{
+	int shaderProgram = glCreateProgram();
+
+	int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexSource, nullptr);
+	glCompileShader(vertexShader);
+
+	int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragShader, 1, &fragmentSource, nullptr);
+	glCompileShader(fragShader);
+
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragShader);
+	glLinkProgram(shaderProgram);
+
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragShader);
 	return shaderProgram;
 }
