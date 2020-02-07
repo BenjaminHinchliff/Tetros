@@ -16,6 +16,8 @@ public:
 
 	Mesh& operator= (Mesh&& other) noexcept;
 
+	operator bool() const;
+
 	virtual void draw() const;
 
 	const std::vector<float>& getVertices() const noexcept;

@@ -33,3 +33,4 @@ configure_file("resources/shaders/ColorAndText.vert" "${CMAKE_CURRENT_BINARY_DIR
 configure_file("resources/shaders/ColorAndText.frag" "${CMAKE_CURRENT_BINARY_DIR}/ColorAndText.frag" COPYONLY)
 
 configure_file("resources/images/container.jpg" "${CMAKE_CURRENT_BINARY_DIR}/container.jpg" COPYONLY)
+configure_file("resources/images/awesomeface.png" "${CMAKE_CURRENT_BINARY_DIR}/awesomeface.png" COPYONLY)

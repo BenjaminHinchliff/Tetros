@@ -50,6 +50,11 @@ Mesh& Mesh::operator= (Mesh&& other) noexcept
 	return *this;
 }
 
+Mesh::operator bool() const
+{
+	return glIsVertexArray(VAO);
+}
+
 void Mesh::draw() const
 {
 	// std::cout << "base" << '\n';

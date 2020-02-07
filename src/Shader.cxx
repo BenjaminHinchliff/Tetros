@@ -25,6 +25,11 @@ Shader::~Shader()
 	glDeleteProgram(shaderProgram);
 }
 
+bool Shader::exists() const
+{
+	return static_cast<bool>(glIsProgram(shaderProgram));
+}
+
 Shader& Shader::operator=(Shader&& right) noexcept
 {
 	shaderProgram = right.shaderProgram;

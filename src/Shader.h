@@ -13,11 +13,13 @@ public:
 	Shader(std::ifstream vertexFile, std::ifstream fragfile);
 	~Shader();
 
-	int getID() const;
-
 	Shader& operator=(Shader&& right) noexcept;
 
 	operator int() const;
+
+	bool exists() const;
+
+	int getID() const;
 private:
 	int buildProgram(const char* vertexSource, const char* fragmentSource) const;
 
