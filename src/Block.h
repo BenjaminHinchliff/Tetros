@@ -20,6 +20,8 @@ public:
 
 	void draw() const;
 private:
+	void applyMatrix();
+
 	static Shader shader;
 	static int matrixLoc;
 	static int colorLoc;

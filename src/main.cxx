@@ -96,16 +96,7 @@ int main()
     //    1, 2, 3  // second triangle
     //};
 
-    Block test;
-    try
-    {
-        test = Block(0.0f, 0.0f, SCR_HEIGHT, glm::vec3(1.0f, 0.0f, 0.0f), proj);
-    }
-    catch (const std::runtime_error & err)
-    {
-        std::cerr << err.what() << '\n';
-        return 1;
-    }
+    Block test(0.0f, 0.0f, 50.0f, glm::vec3(1.0f, 0.0f, 0.0f), proj);
 
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     while (!glfwWindowShouldClose(window))
@@ -114,6 +105,9 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         test.draw();
+        test.translate(100.0f, 100.0f);
+        test.draw();
+        test.translate(-100.0f, -100.0f);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
