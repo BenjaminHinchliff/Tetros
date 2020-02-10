@@ -1,46 +1,49 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include <array>
+#include <vector>
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <glm/glm.hpp>
 
-#include "Shader.h"
-#include "TexturedMesh.h"
+using templateData_t = std::vector<std::vector<bool>>;
+
+struct BlockTemplate
+{
+    templateData_t templateData;
+    glm::vec3 color;
+};
 
 class Block
 {
 public:
-	Block();
-	Block(float x, float y, float size, const glm::vec3& color, const glm::mat4& projection);
+    Block();
+    Block(int x, int y, const BlockTemplate& blockTemplate);
 
-	void translate(float x, float y);
-	void rescale(float factor);
+    void setX(int x);
+    void setY(int y);
+    void changeX(int x);
+    void changeY(int y);
 
-	void draw() const;
+    int getX() const;
+    int getY() const;
+    const templateData_t& getTemplateData() const;
+    const glm::vec3& getColor() const;
+    size_t getWidth() const;
+    size_t getHeight() const;
+    bool getLocked() const;
+
+    void lock();
+    void unlock();
+
 private:
-	void applyMatrix();
+    void updatePos();
 
-	static Shader shader;
-	static int matrixLoc;
-	static int colorLoc;
-	static TexturedMesh model;
-	glm::mat4 projection = glm::mat4(1.0f);
-	glm::mat4 translation = glm::mat4(1.0f);
-	glm::mat4 scale = glm::mat4(1.0f);
-
-	std::vector<float> vertices{
-		 // positions	// tex coords
-		 1.0f,  1.0f,	1.0f, 1.0f,	// right top  
-		 1.0f,  0.0f,	1.0f, 0.0f,	// right bottom
-		 0.0f,  0.0f,	0.0f, 0.0f,	// left bottom
-		 0.0f,  1.0f,	0.0f, 1.0f,	// left top 
-	};
-	std::vector<GLuint> indices{
-		0, 1, 3, // first triangle
-		1, 2, 3  // second triangle
-	};
+    int x = 0;
+    int y = 0;
+    bool locked = false;
+    int bufX = 0;
+    int bufY = 0;
+    BlockTemplate blockTemplate = {};
 };
 
 #endif // !BLOCK_H

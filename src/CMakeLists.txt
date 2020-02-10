@@ -10,6 +10,11 @@ set(SOURCES
     "Mesh.cxx"
     "TexturedMesh.h"
     "TexturedMesh.cxx"
+    "Square.h"
+    "Square.cxx"
+    "Grid.h"
+    "Grid.cxx"
+    # "BlockTemplates.h"
     "Block.h"
     "Block.cxx"
 )
@@ -32,5 +37,5 @@ target_link_libraries(${BINARY} PRIVATE glm)
 configure_file("resources/shaders/ColorAndText.vert" "${CMAKE_CURRENT_BINARY_DIR}/ColorAndText.vert" COPYONLY)
 configure_file("resources/shaders/ColorAndText.frag" "${CMAKE_CURRENT_BINARY_DIR}/ColorAndText.frag" COPYONLY)
 
-configure_file("resources/images/container.jpg" "${CMAKE_CURRENT_BINARY_DIR}/container.jpg" COPYONLY)
-configure_file("resources/images/awesomeface.png" "${CMAKE_CURRENT_BINARY_DIR}/awesomeface.png" COPYONLY)
+configure_file("resources/images/block.png" "${CMAKE_CURRENT_BINARY_DIR}/block.png" COPYONLY)
+# configure_file("resources/images/awesomeface.png" "${CMAKE_CURRENT_BINARY_DIR}/awesomeface.png" COPYONLY)

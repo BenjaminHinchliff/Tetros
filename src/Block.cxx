@@ -1,60 +1,89 @@
 #include "Block.h"
 
-#include <iostream>
-
-Shader Block::shader;
-int Block::matrixLoc = -1;
-int Block::colorLoc = -1;
-TexturedMesh Block::model;
-
 Block::Block()
 {
-    if (!shader.exists())
+}
+
+Block::Block(int x, int y, const BlockTemplate& blockTemplate)
+    : x(x), y(y), bufX(x), bufY(y), blockTemplate(blockTemplate)
+{
+}
+
+void Block::updatePos()
+{
+    if (!locked)
     {
-        shader = Shader(std::ifstream("ColorAndText.vert"), std::ifstream("ColorAndText.frag"));
-        colorLoc = glGetUniformLocation(shader, "uColor");
-        matrixLoc = glGetUniformLocation(shader, "uMatrix");
-    }
-    if (!model)
-    {
-        model = TexturedMesh(vertices, indices, "container.jpg");
+        x = bufX;
+        y = bufY;
     }
 }
 
-Block::Block(float x, float y, float size, const glm::vec3& color, const glm::mat4& projection)
-    : Block()
+void Block::setX(int x)
 {
-    translate(x, y);
-    rescale(size);
-    this->projection = projection;
-    applyMatrix();
-    glUseProgram(shader);
-    glUniform3fv(colorLoc, 1, glm::value_ptr(color));
-    glUseProgram(0);
+    bufX = x;
+    updatePos();
 }
 
-void Block::translate(float x, float y)
+void Block::setY(int y)
 {
-    translation = glm::translate(translation, glm::vec3(x, y, 0.0f));
-    applyMatrix();
+    bufY = y;
+    updatePos();
 }
 
-void Block::rescale(float factor)
+void Block::changeX(int x)
 {
-    scale = glm::scale(scale, glm::vec3(factor, factor, 1.0f));
-    applyMatrix();
+    bufX += x;
+    updatePos();
 }
 
-void Block::applyMatrix()
+void Block::changeY(int y)
 {
-    glUseProgram(shader);
-    glUniformMatrix4fv(matrixLoc, 1, GL_FALSE, glm::value_ptr(projection * translation * scale));
-    glUseProgram(0);
+    bufY += y;
+    updatePos();
 }
 
-void Block::draw() const
+const templateData_t& Block::getTemplateData() const
 {
-    glUseProgram(shader);
-    model.draw();
-    glUseProgram(0);
+    return blockTemplate.templateData;
+}
+
+const glm::vec3& Block::getColor() const
+{
+    return blockTemplate.color;
+}
+
+int Block::getX() const
+{
+    return x;
+}
+
+int Block::getY() const
+{
+    return y;
+}
+
+size_t Block::getWidth() const
+{
+    return blockTemplate.templateData[0].size();
+}
+
+size_t Block::getHeight() const
+{
+    return blockTemplate.templateData.size();
+}
+
+bool Block::getLocked() const
+{
+    return locked;
+}
+
+void Block::lock()
+{
+    locked = true;
+}
+
+void Block::unlock()
+{
+    locked = false;
+    updatePos();
 }

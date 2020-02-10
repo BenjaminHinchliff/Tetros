@@ -11,18 +11,26 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#ifdef _DEBUG
 #include "Debug.h"
+#endif // _DEBUG
 #include "Shader.h"
 #include "Mesh.h"
 #include "TexturedMesh.h"
+#include "Square.h"
+#include "Grid.h"
 #include "Block.h"
+#include "BlockTemplates.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-
-namespace fs = std::filesystem;
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 constexpr int SCR_WIDTH = 640;
 constexpr int SCR_HEIGHT = 480;
+constexpr int GRID_WIDTH = 5;
+constexpr int GRID_HEIGHT = 10;
+constexpr int NODE_SIZE = static_cast<int>(SCR_HEIGHT / static_cast<float>(GRID_HEIGHT));
+constexpr int X_OFFSET = static_cast<int>(SCR_WIDTH / 2.0 - NODE_SIZE * GRID_WIDTH / 2.0);
 
 int main()
 {
@@ -35,7 +43,9 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef _DEBUG
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+#endif // _DEBUG
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif // __APPLE__
@@ -59,7 +69,9 @@ int main()
 
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
-    GLint flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+#ifdef _DEBUG
+    GLint flags;
+    glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
     if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
     {
         // initialize debug output
@@ -68,47 +80,42 @@ int main()
         glDebugMessageCallback(glDebugOutput, nullptr);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
+#endif // DEBUG
 
-    // glm::mat4 projection(glm::ortho(0.0f, static_cast<float>(SCR_WIDTH), static_cast<float>(SCR_HEIGHT), 0.0f));
-
-    //Shader color(std::ifstream("ColorAndText.vert"), std::ifstream("ColorAndText.frag"));
-    //int colorLoc = glGetUniformLocation(color, "uColor");
-    //int matrixLoc = glGetUniformLocation(color, "uMatrix");
-
-    //glUseProgram(color);
-    //glUniform3fv(colorLoc, 1, glm::value_ptr(glm::vec3(1.0f, 0.0f, 0.0f)));
     glm::mat4 proj(glm::ortho<float>(0.0f, SCR_WIDTH, SCR_HEIGHT, 0.0f));
-    //glm::mat4 world(1.0f);
-    //world = glm::translate(world, glm::vec3(SCR_WIDTH / 4.0f, SCR_HEIGHT / 2.0f, 0.0f));
-    //glm::mat4 model(1.0f);
-    //model = glm::scale(model, glm::vec3(100.0f, 100.0f, 1.0f));
 
-    //std::vector<float> vertices{
-    //    // positions	// tex coords
-    //     1.0f,  1.0f,	1.0f, 1.0f,	// right top  
-    //     1.0f, -1.0f,	1.0f, 0.0f,	// right bottom
-    //    -1.0f, -1.0f,	0.0f, 0.0f,	// left bottom
-    //    -1.0f,  1.0f,	0.0f, 1.0f,	// left top 
-    //};
+    Grid grid(GRID_WIDTH, GRID_HEIGHT, NODE_SIZE, proj, X_OFFSET);
 
-    //std::vector<GLuint> indices{
-    //    0, 1, 3, // first triangle
-    //    1, 2, 3  // second triangle
-    //};
+    Block currentBlock(1, 0, blocks::L);
 
-    Block test(0.0f, 0.0f, 50.0f, glm::vec3(1.0f, 0.0f, 0.0f), proj);
+    glfwSetKeyCallback(window, keyCallback);
 
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    constexpr double dropDelay = 1.0;
+
+    double lastTime = glfwGetTime();
+    double nextDrop = lastTime + dropDelay;
     while (!glfwWindowShouldClose(window))
     {
+        double currentTime = glfwGetTime();
+        double deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        if (currentTime >= nextDrop)
+        {
+            currentBlock.changeY(1);
+            nextDrop = currentTime + dropDelay;
+        }
+        grid.removeBlock(currentBlock);
+        grid.setBlock(currentBlock);
+
+        // std::cout << currentBlock.getLocked() << '\n';
+
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        test.draw();
-        test.translate(100.0f, 100.0f);
-        test.draw();
-        test.translate(-100.0f, -100.0f);
+        grid.draw();
 
+        glfwSetWindowUserPointer(window, &currentBlock);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -119,4 +126,24 @@ int main()
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    Block& currentBlock = *static_cast<Block*>(glfwGetWindowUserPointer(window));
+
+    if (action == GLFW_PRESS)
+    {
+        switch (key)
+        {
+        case GLFW_KEY_RIGHT:
+            currentBlock.changeX(1);
+            break;
+        case GLFW_KEY_LEFT:
+            currentBlock.changeX(-1);
+            break;
+        default:
+            break;
+        }
+    }
 }
