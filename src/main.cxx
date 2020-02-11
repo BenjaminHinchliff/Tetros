@@ -51,7 +51,7 @@ int main()
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif // __APPLE__
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Hello World", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Tetros", nullptr, nullptr);
     if (!window)
     {
         std::cerr << "Window failed to create" << '\n';
@@ -82,7 +82,7 @@ int main()
         glDebugMessageCallback(glDebugOutput, nullptr);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
-#endif // DEBUG
+#endif // _DEBUG
 
     glm::mat4 proj(glm::ortho<float>(0.0f, SCR_WIDTH, SCR_HEIGHT, 0.0f));
 
