@@ -22,6 +22,8 @@ Use CMake and use a standard compilation process. Nothing weird should be happen
 
 I would install them via vcpkg. The exact versions are just the ones I compiled with. Newer ones should work so long as there aren't any major breaking changes. I'm thinking of adding the libs inside the project, but I just want to get this up right now.
 
+Just make sure the program can find its resources (in the same dir).
+
 ## Controls
 
 left and right to move the block, up to rotate, space to drop. Everything else should be intuitive.
