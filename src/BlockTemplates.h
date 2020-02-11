@@ -2,6 +2,8 @@
 #define BLOCK_TEMPLATES_H
 
 #include <vector>
+#include <random>
+#include <iterator>
 
 #include "Block.h"
 
@@ -12,41 +14,76 @@ namespace blocks
             {0, 0, 1},
             {1, 1, 1},
         },
-        glm::vec3(1.0f, 0.8431f, 0.0f)
+        glm::vec3(0.9373f, 0.4745f, 0.1294f)
     };
-    //const blocks_t L{
-    //    {0, 0, 1},
-    //    {1, 1, 1},
-    //};
 
-    //const blocks_t J{
-    //    {1, 0, 0},
-    //    {1, 1, 1}
-    //};
+    const BlockTemplate J{
+        {
+            {1, 0, 0},
+            {1, 1, 1},
+        },
+        glm::vec3(0.3530f, 0.3961f, 0.6784f)
+    };
 
-    //const blocks_t Z{
-    //    {1, 1, 0},
-    //    {0, 1, 1},
-    //};
+    const BlockTemplate Z{
+        {
+            {1, 1, 0},
+            {0, 1, 1},
+        },
+        glm::vec3(0.9373f, 0.1255f, 0.1608f)
+    };
 
-    //const blocks_t S{
-    //    {0, 1, 1},
-    //    {1, 1, 0},
-    //};
+    const BlockTemplate S{
+        {
+            {0, 1, 1},
+            {1, 1, 0},
+        },
+        glm::vec3(0.2588f, 0.7137f, 0.2588f)
+    };
 
-    //const blocks_t T{
-    //    {0, 1, 0},
-    //    {1, 1, 1},
-    //};
+    const BlockTemplate T{
+        {
+            {0, 1, 0},
+            {1, 1, 1},
+        },
+        glm::vec3(0.6784f, 0.3020f, 0.6118f)
+    };
 
-    //const blocks_t O{
-    //    {1, 1},
-    //    {1, 1},
-    //};
+    const BlockTemplate O{
+        {
+            {1, 1},
+            {1, 1},
+        },
+        glm::vec3(0.9686f, 0.8275f, 0.0314f)
+    };
 
-    //const blocks_t I{
-    //    {1, 1, 1, 1},
-    //};
+    const BlockTemplate I{
+        {
+            {1, 1, 1, 1},
+        },
+        glm::vec3(0.1922f, 0.7804f, 0.9373f)
+    };
+
+    const std::array<BlockTemplate, 7> arr{ L, J, Z, S, T, O, I };
+
+    //template<typename IterT>
+    //IterT select_randomly(IterT start, IterT end) {
+    //    static std::random_device rd;
+    //    static std::mt19937 gen(rd());
+    //    std::uniform_int_distribution<> dis(0, std::distance(start, end) - 1);
+    //    std::advance(start, dis(gen));
+    //    return start;
+    //}
+    const BlockTemplate& selectRandomBlock()
+    {
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
+        auto start(arr.begin());
+        auto end(arr.end());
+        std::uniform_int_distribution<> dis(0, std::distance(start, end) - 1);
+        std::advance(start, dis(gen));
+        return *start;
+    }
 }
 
 #endif

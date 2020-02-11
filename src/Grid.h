@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
 
 #include "Square.h"
 #include "Block.h"
@@ -19,14 +20,22 @@ public:
 	void setBlock(Block& block);
 	void removeBlock(Block& block);
 
+	bool testCollisions(const Block& block);
+	bool testInBounds(const Block& block);
+
+	void clearLines();
+
 	void draw();
+
+	// debug
+	void printGrid() const;
 private:
 	void modBlockBase(int offX, int offY, const templateData_t& data, const glm::vec3& color);
 
 	Square square;
 	std::vector<std::vector<glm::vec3>> grid = {};
 
-	const glm::vec3 blank{ 0.0f, 0.0f, 0.0f };
+	static constexpr glm::vec3 blank{ 0.0f, 0.0f, 0.0f };
 };
 
 #endif // !GRID_H

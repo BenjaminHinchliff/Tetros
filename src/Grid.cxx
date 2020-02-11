@@ -42,6 +42,58 @@ void Grid::removeBlock(Block& block)
     block.unlock();
 }
 
+bool Grid::testCollisions(const Block& block)
+{
+    const templateData_t data(block.getTemplateData());
+    for (size_t y = 0; y < block.getHeight(); ++y)
+    {
+        for (size_t x = 0; x < block.getWidth(); ++x)
+        {
+            constexpr float epsilon = std::numeric_limits<float>::epsilon();
+            if (data[y][x] && glm::length2(grid[block.getBufY() + y][block.getBufX() + x] - blank) > epsilon * epsilon)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool Grid::testInBounds(const Block& block)
+{
+    return block.getBufY() >= 0
+        && block.getBufY() + block.getHeight() <= grid.size()
+        && block.getBufX() >= 0
+        && block.getBufX() + block.getWidth() <= grid[0].size();
+}
+
+void Grid::clearLines()
+{
+    constexpr float epsilon = std::numeric_limits<float>::epsilon();
+    for (size_t y = 0; y < grid.size(); ++y)
+    {
+        bool cleared = true;
+        for (const auto& vecItem : grid[y])
+        {
+            if (glm::length2(vecItem) < epsilon * epsilon)
+            {
+                cleared = false;
+            }
+        }
+        if (cleared)
+        {
+            for (auto& item : grid[y])
+            {
+                item = glm::vec3(0.0f, 0.0f, 0.0f);
+            }
+            for (int sy = y - 1; sy >= 0; --sy)
+            {
+                grid[sy + 1] = grid[sy];
+            }
+        }
+    }
+}
+
 void Grid::draw()   
 {
     float blockSize = square.getSize();
@@ -56,5 +108,17 @@ void Grid::draw()
             square.translate(blockSize, 0.0f);
         }
         square.translate(-blockSize * grid[y].size(), blockSize);
+    }
+}
+
+void Grid::printGrid() const
+{
+    for (const auto& arr : grid)
+    {
+        for (const auto& color : arr)
+        {
+            std::cout << '(' << color.x << ' ' << color.y << ' ' << color.z << ") ";
+        }
+        std::cout << '\n';
     }
 }

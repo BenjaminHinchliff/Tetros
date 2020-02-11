@@ -2,6 +2,7 @@
 #define BLOCK_H
 
 #include <vector>
+#include <algorithm>
 
 #include <glm/glm.hpp>
 
@@ -24,6 +25,9 @@ public:
     void changeX(int x);
     void changeY(int y);
 
+    void rotate();
+    void unrotate();
+
     int getX() const;
     int getY() const;
     const templateData_t& getTemplateData() const;
@@ -32,18 +36,23 @@ public:
     size_t getHeight() const;
     bool getLocked() const;
 
+    int getBufX() const;
+    int getBufY() const;
+
     void lock();
     void unlock();
 
 private:
-    void updatePos();
+    void updateData();
 
     int x = 0;
     int y = 0;
     bool locked = false;
     int bufX = 0;
     int bufY = 0;
-    BlockTemplate blockTemplate = {};
+    templateData_t templateData = {};
+    templateData_t templateBuf = {};
+    glm::vec3 color = { 0.0f, 0.0f, 0.0f };
 };
 
 #endif // !BLOCK_H

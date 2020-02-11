@@ -1,55 +1,88 @@
 #include "Block.h"
 
+#include <iostream>
+
 Block::Block()
 {
 }
 
 Block::Block(int x, int y, const BlockTemplate& blockTemplate)
-    : x(x), y(y), bufX(x), bufY(y), blockTemplate(blockTemplate)
+    : x(x - blockTemplate.templateData[0].size() / 2), y(y),
+    bufX(this->x), bufY(this->y),
+    templateData(blockTemplate.templateData),
+    templateBuf(templateData),
+    color(blockTemplate.color)
 {
 }
 
-void Block::updatePos()
+void Block::updateData()
 {
     if (!locked)
     {
         x = bufX;
         y = bufY;
+        templateData = templateBuf;
     }
 }
 
 void Block::setX(int x)
 {
     bufX = x;
-    updatePos();
+    updateData();
 }
 
 void Block::setY(int y)
 {
     bufY = y;
-    updatePos();
+    updateData();
 }
 
 void Block::changeX(int x)
 {
     bufX += x;
-    updatePos();
+    updateData();
 }
 
 void Block::changeY(int y)
 {
     bufY += y;
-    updatePos();
+    updateData();
+}
+
+void Block::rotate()
+{
+    const templateData_t& unrotated = templateBuf;
+    templateData_t rotatedTemplate = {};
+    for (size_t x = 0; x < unrotated[0].size(); ++x)
+    {
+        std::vector<bool> row;
+        for (int y = unrotated.size() - 1; y >= 0; --y)
+        {
+            row.push_back(unrotated[y][x]);
+        }
+        rotatedTemplate.push_back(row);
+    }
+
+    templateBuf = std::move(rotatedTemplate);
+    updateData();
+}
+void Block::unrotate()
+{
+    // lazy but DRY...
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rotate();
+    }
 }
 
 const templateData_t& Block::getTemplateData() const
 {
-    return blockTemplate.templateData;
+    return templateData;
 }
 
 const glm::vec3& Block::getColor() const
 {
-    return blockTemplate.color;
+    return color;
 }
 
 int Block::getX() const
@@ -64,17 +97,27 @@ int Block::getY() const
 
 size_t Block::getWidth() const
 {
-    return blockTemplate.templateData[0].size();
+    return templateData[0].size();
 }
 
 size_t Block::getHeight() const
 {
-    return blockTemplate.templateData.size();
+    return templateData.size();
 }
 
 bool Block::getLocked() const
 {
     return locked;
+}
+
+int Block::getBufX() const
+{
+    return bufX;
+}
+
+int Block::getBufY() const
+{
+    return bufY;
 }
 
 void Block::lock()
@@ -85,5 +128,5 @@ void Block::lock()
 void Block::unlock()
 {
     locked = false;
-    updatePos();
+    updateData();
 }
