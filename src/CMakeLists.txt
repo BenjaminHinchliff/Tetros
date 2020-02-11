@@ -14,7 +14,7 @@ set(SOURCES
     "Square.cxx"
     "Grid.h"
     "Grid.cxx"
-    # "BlockTemplates.h"
+    "BlockTemplates.h"
     "Block.h"
     "Block.cxx"
 )
@@ -27,15 +27,8 @@ find_package(glad CONFIG REQUIRED)
 target_link_libraries(${BINARY} PRIVATE glad::glad)
 find_package(glm CONFIG REQUIRED)
 target_link_libraries(${BINARY} PRIVATE glm)
-# find_package(freetype CONFIG REQUIRED)
-# target_link_libraries(${BINARY} PRIVATE freetype)
 
-# configure_file("resources/shaders/Color.vert" "${CMAKE_CURRENT_BINARY_DIR}/Color.vert" COPYONLY)
-# configure_file("resources/shaders/Color.frag" "${CMAKE_CURRENT_BINARY_DIR}/Color.frag" COPYONLY)
-# configure_file("resources/shaders/Texture.vert" "${CMAKE_CURRENT_BINARY_DIR}/Texture.vert" COPYONLY)
-# configure_file("resources/shaders/Texture.frag" "${CMAKE_CURRENT_BINARY_DIR}/Texture.frag" COPYONLY)
 configure_file("resources/shaders/ColorAndText.vert" "${CMAKE_CURRENT_BINARY_DIR}/ColorAndText.vert" COPYONLY)
 configure_file("resources/shaders/ColorAndText.frag" "${CMAKE_CURRENT_BINARY_DIR}/ColorAndText.frag" COPYONLY)
 
 configure_file("resources/images/block.png" "${CMAKE_CURRENT_BINARY_DIR}/block.png" COPYONLY)
-# configure_file("resources/images/awesomeface.png" "${CMAKE_CURRENT_BINARY_DIR}/awesomeface.png" COPYONLY)
