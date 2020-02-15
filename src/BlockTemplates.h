@@ -66,14 +66,6 @@ namespace blocks
 
     const std::array<BlockTemplate, 7> arr{ L, J, Z, S, T, O, I };
 
-    //template<typename IterT>
-    //IterT select_randomly(IterT start, IterT end) {
-    //    static std::random_device rd;
-    //    static std::mt19937 gen(rd());
-    //    std::uniform_int_distribution<> dis(0, std::distance(start, end) - 1);
-    //    std::advance(start, dis(gen));
-    //    return start;
-    //}
     const BlockTemplate& selectRandomBlock()
     {
         static std::random_device rd;
